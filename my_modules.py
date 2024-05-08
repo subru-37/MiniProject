@@ -21,7 +21,28 @@ import easyocr
 from picamera2 import Picamera2, Preview
 import os
 
+import firebase_admin
+from firebase_admin import credentials, storage
+from firebase_admin import firestore
 
+def config(key):
+    try: 
+        cred = credentials.Certificate(key)
+        firebase_admin.initialize_app(cred)
+
+        db = firestore.client()
+        print('connected to database')
+        return db
+    except: 
+        print("Error with credentials")
+def write(db, coll_name, data):
+    try: 
+        db.collection(coll_name).add(data)
+        print("Write Successfull")
+    except: 
+        print("Not added, error")
+
+# def upload_image(db, bucket_name, image_paths):
 
 def load_model(name):
     # Load the entire model
@@ -89,7 +110,8 @@ def plot_img_bbox(img, target):
     # Bounding boxes are defined as follows: x-min y-min width height
     fig, a = plt.subplots(1,1)
     fig.set_size_inches(5,5)
-    print(type(img))
+    image = np.array(img)
+    print(type(image))
     a.imshow(img)
     i=0
     for box in (target):
@@ -106,6 +128,7 @@ def plot_img_bbox(img, target):
         # Draw the bounding box on top of the image
         a.add_patch(rect)
     plt.show()
+    plt.savefig('./output.jpeg', bbox_inches='tight', pad_inches=0)
 
 def display_image(prediction, tensor_image):
     nms_prediction = apply_nms(prediction, iou_thresh=0.2)
@@ -126,6 +149,7 @@ def predict_text(tensor_image, tensor_array):
     rgb_image = cv2.cvtColor(numpy_image, cv2.COLOR_BGR2RGB)
     print(rgb_image.shape)
     roi = tensor_array.numpy()
+    texts = []
     for i in roi:
         x, y, w, h = i
         print(x,y,w,h)
@@ -137,10 +161,14 @@ def predict_text(tensor_image, tensor_array):
         result = reader.readtext(plate)
         text = pytesseract.image_to_string(plate, config='--psm 6')
         print('PyTesseract:',text)
+        texts.append(text)
         try: 
             print(result[0][1])
+            texts.append(result[0][1])
         except:
-            print('platw not recognized')
+            print('plate not recognized')
+
+        return texts
 
 
 

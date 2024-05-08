@@ -1,4 +1,4 @@
-from my_modules import load_model, take_image, open_image, predict_box, apply_nms, torch_to_pil, plot_img_bbox, display_image, predict_text
+from my_modules import config, write, load_model, take_image, open_image, predict_box, apply_nms, torch_to_pil, plot_img_bbox, display_image, predict_text
 import time
 import multiprocessing
 from sys import stdin
@@ -6,6 +6,7 @@ from termios import TCIOFLUSH, tcflush
 from time import strftime
 from pynput import keyboard
 from picamera2 import Picamera2, Preview
+from datetime import datetime
 
 my_model = load_model('./models/Faster-RCNN-mobilenetv3.pth')
 
@@ -13,6 +14,8 @@ pressed_key = ''
 cam = Picamera2()
 cam.start_preview(Preview.QTGL)
 cam.start()
+
+db = config('./creds/creds.json')
 
 def take_photo():
     # Capture a PNG image while still running in the preview mode.
@@ -25,9 +28,9 @@ def take_photo():
 
     try:
         while True:
-            print(pressed_key)
+            # print(pressed_key)
             time.sleep(1)
-            print(pressed_key == 'c')
+            print('Waiting to Capture Image')
             if pressed_key == 'c':
                     # filename = strftime("%Y%m%d-%H%M%S") + '.png'
                     filename = 'test.jpeg'
@@ -35,16 +38,16 @@ def take_photo():
                     print(f"\rCaptured {filename} succesfully")
                     pressed_key = 'l'
                     my_image = open_image('./test.jpeg')
-                    start = time.time()
                     my_boxes = predict_box('./test1.jpeg', my_model)
-                    end = time.time()
-                    print('time to predict', end - start)
                     
                     prediction, tensor_image = my_boxes[0], my_boxes[1]
 
                     tensor_array = display_image(prediction, tensor_image)
 
-                    predict_text(tensor_image, tensor_array)
+                    texts = predict_text(tensor_image, tensor_array)
+                    current_time = datetime.now()
+                    data = {"number_plate": texts, "timestamp": current_time}
+                    write(db, "number_plates", data)
 
             if pressed_key == 'x':
                 print("\rClosing camera...")

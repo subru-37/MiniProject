@@ -6,3 +6,4 @@ Faster-RCNN-mobilenetv3.pth
 Faster-RCNN.pth
 Faster-RCNN-quant.pth
 /models
+/creds
