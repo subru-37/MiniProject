@@ -41,8 +41,9 @@ pip install torch torchaudio torchvision -f https://download.pytorch.org/whl/tor
 ## Output: 
 
 ![image](https://github.com/subru-37/Number-Plate-Recognizing-System/assets/93091455/5ea4541f-c44e-40f6-97ac-8aac93d1394b)
-![image](https://github.com/subru-37/Number-Plate-Recognizing-System/assets/93091455/d4f9245c-972d-4d7f-b18a-ea8e74429174)
-![image](https://github.com/subru-37/Number-Plate-Recognizing-System/assets/93091455/7fe84d34-0d7a-4c6c-9ab2-48009099653f)
+![image](https://github.com/subru-37/Number-Plate-Recognizing-System/assets/93091455/38ec21fa-a2e5-4095-b9c6-311cd9927e8e)
+![image](https://github.com/subru-37/Number-Plate-Recognizing-System/assets/93091455/9ca947a3-e23a-4825-b162-bd1d93126a91)
+
 
 
 
